@@ -1,0 +1,24 @@
+---
+# tasks file for setup_printer_67_test
+
+- name: Установка принтеров
+  ansible.builtin.shell:
+    cmd: 'lpadmin -p {{ item.printer_name }} -v {{  item.printer_uri }} -E -m {{ item.printer_ppd }} -D "{{ item.printer_des }}" -L "{{ item.printer_location }}"'
+  with_items: "{{ printers }}"
+  ignore_errors: yes
+
+- name: Получение списка принтеров
+  ansible.builtin.shell:
+    cmd: "lpstat -p | awk '{print $2}' | sed 's/://g'"
+  register: current_printers
+
+- name: Список на удаление
+  ansible.builtin.set_fact:
+    printers_to_remove: "{{ current_printers.stdout_lines | difference(printers | map(attribute='printer_name') | list) }}"
+
+- name: Удаление лишних принтеров
+  ansible.builtin.shell:
+    cmd: 'lpadmin -x "{{ item }}"'
+  with_items: "{{ printers_to_remove }}"
+  when: printers_to_remove | length > 0
+  ignore_errors: yes

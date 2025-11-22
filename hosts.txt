@@ -1,0 +1,2 @@
+[print_servers_test]
+kgd22-sl00305 ansible_host=10.67.1.179 ansible_port=12121 ansible_user=goblin #ansible_become_pass={{ "${S_PASS}" }}
