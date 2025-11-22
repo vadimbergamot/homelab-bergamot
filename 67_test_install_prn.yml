@@ -3,7 +3,7 @@
   hosts: print_servers_test
   become : true
   become_user : root
-  remote_user : goblin
+  remote_user : bergamot
   become_method: sudo
 
   vars_files:
